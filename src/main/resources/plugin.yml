@@ -1,0 +1,4 @@
+name: ShenyuATB
+version: '${project.version}'
+main: org.shenyu.shenyuatb.ShenyuATB
+api-version: '1.20'
