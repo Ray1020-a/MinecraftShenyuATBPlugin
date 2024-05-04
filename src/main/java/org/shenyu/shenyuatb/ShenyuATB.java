@@ -1,5 +1,6 @@
 package org.shenyu.shenyuatb;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,7 +9,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +23,12 @@ public final class ShenyuATB extends JavaPlugin implements Listener{
 
     private static Economy econ = null;
     private static Permission perms = null;
+    private FileConfiguration config;
+    private File configFile;
+
+    private String datamoney;
+    private String currency;
+    private int cmoney;
 
     private final List<String> specialAchievements = Arrays.asList(
             "story/root",
@@ -140,15 +150,37 @@ public final class ShenyuATB extends JavaPlugin implements Listener{
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        getLogger().info("成就獎金插件已啟用!");
         Bukkit.getPluginManager().registerEvents(this, this);
         setupPermissions();
+        initConfigFile();
+        datamoney = config.getString("money");
+        currency = config.getString("currency");
+        cmoney = Integer.parseInt(datamoney);
+        getLogger().info("成就獎金插件已啟用!");
+    }
+
+    private void initConfigFile() {
+        configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            getDataFolder().mkdirs();
+            saveResource("config.yml", false);
+        }
+        config = YamlConfiguration.loadConfiguration(configFile);
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("成就獎金插件已停用!");
+        if (config != null) {
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                getLogger().warning("Could not save config.yml!");
+            }
+        } else {
+            getLogger().warning("Config is null! Unable to save config.yml.");
+        }
         getLogger().info(String.format("成就獎金插件經濟系統關閉 %s", getDescription().getVersion()));
+        getLogger().info("成就獎金插件已停用!");
     }
 
     private boolean setupEconomy() {
@@ -182,8 +214,8 @@ public final class ShenyuATB extends JavaPlugin implements Listener{
             Player ecoplayer = event.getPlayer();
             if (specialAchievements.contains(advancementId)) {
                 String playerName = event.getPlayer().getName();
-                addMoney(ecoplayer, 200);
-                String message = "§7[§6神羽訂製插件§7]§e" + playerName + " §f您解鎖了一個成就，您已獲得獎勵金§9200§f元神羽幣";
+                addMoney(ecoplayer, cmoney);
+                String message = "§7[§6ShenyuATB§7]§e" + playerName + " §f您解鎖了一個成就，您已獲得獎勵金§9" + cmoney +"§f元" + currency;
                 event.getPlayer().sendMessage(message);
             }
         }
