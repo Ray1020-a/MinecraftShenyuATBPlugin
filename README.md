@@ -5,4 +5,5 @@
 
 ## License | 開源許可證
 *This project uses MIT License*
-**該專案使用 MIT 開源許可證**
+
+*該專案使用 MIT 開源許可證*
