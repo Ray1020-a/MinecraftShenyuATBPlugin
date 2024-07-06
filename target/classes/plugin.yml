@@ -1,5 +1,5 @@
 name: ShenyuATB
-version: '${project.version}'
+version: '1.0.2-SNAPSHOT'
 main: org.shenyu.shenyuatb.ShenyuATB
 api-version: '1.21'
 depend:
