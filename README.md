@@ -1,7 +1,6 @@
 # Minecraft神羽成就獎金插件
 運行版本:1.20+
 ---
-[此插件用於 神奇的伺服器](https://discord.gg/3jMTFchdsm)
 
 ![image](https://github.com/Ray1020-a/MinecraftShenyuATBPlugin/blob/main/img/config.png)
 - 可制定給予貨幣數量、貨幣名稱
